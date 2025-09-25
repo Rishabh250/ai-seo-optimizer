@@ -35,3 +35,7 @@ class InvalidConfigurationError(AISeOOptimizerError):
 class PromptTemplateError(AISeOOptimizerError):
     """Raised when prompt template processing fails."""
     pass
+
+class ReviewsNotFoundError(AISeOOptimizerError):
+    """Raised when reviews are not found."""
+    pass

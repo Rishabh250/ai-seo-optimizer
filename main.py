@@ -14,8 +14,10 @@ _THIS_DIR = Path(__file__).resolve().parent
 if str(_THIS_DIR) not in sys.path:
     sys.path.insert(0, str(_THIS_DIR))
 
+from src.core.course_generator import CourseContentGenerator  # noqa: E402
 from src.core.fees_generator import FeesContentGenerator  # noqa: E402
 from src.core.overview_generator import CollegeOverviewGenerator  # noqa: E402
+from src.core.reviews_generator import ReviewsContentGenerator  # noqa: E402
 from src.models.generator import GeneratorConfig  # noqa: E402
 
 
@@ -31,7 +33,7 @@ def main():
     """Simple main function."""
     parser = argparse.ArgumentParser(description="Simple AI Content Generator")
     parser.add_argument("--college-id", type=int, required=True, help="College ID")
-    parser.add_argument("--type", choices=["overview", "fees", "both"], default="both", 
+    parser.add_argument("--type", choices=["overview", "fees", "reviews", "courses", "all"], default="all", 
                        help="Content type to generate")
     parser.add_argument("--api-key", help="Google API key")
     
@@ -49,7 +51,7 @@ def main():
     print(f"🚀 Generating {args.type} content for college ID: {args.college_id}")
     
     try:
-        if args.type == "overview":
+        if args.type in ["overview", "all"]:
             generator = CollegeOverviewGenerator(config)
             overview = generator.generate_by_college_id(args.college_id)
             
@@ -58,7 +60,7 @@ def main():
             print("="*60)
             print(overview)
         
-        if args.type == "fees":
+        if args.type in ["fees", "all"]:
             generator = FeesContentGenerator(config)
             fees_content = generator.generate_fees_by_college_id(args.college_id)
             
@@ -72,6 +74,24 @@ def main():
                     print(content)
             else:
                 print(fees_content)
+        
+        if args.type in ["reviews", "all"]:
+            generator = ReviewsContentGenerator(config)
+            reviews_content = generator.generate_reviews_by_college_id(args.college_id)
+            
+            print("\n" + "="*60)
+            print("⭐ REVIEWS CONTENT")
+            print("="*60)
+            print(reviews_content)
+        
+        if args.type in ["courses", "all"]:
+            generator = CourseContentGenerator(config)
+            course_content = generator.generate_courses_by_college_id(args.college_id)
+            
+            print("\n" + "="*60)
+            print("📚 COURSE CONTENT")
+            print("="*60)
+            print(course_content)
     
     except Exception as e:
         print(f"❌ Error: {e}")

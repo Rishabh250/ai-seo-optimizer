@@ -1,6 +1,7 @@
-# Essential dependencies for AI Content Generator
-langchain==0.1.20
-langchain-google-genai==1.0.10
-google-generativeai==0.7.2
-python-dotenv==1.0.0
-psycopg2-binary==2.9.9
+# Essential dependencies for AISeO Optimizer
+langchain>=0.3.0,<0.4.0
+langchain-google-genai>=2.0.0,<3.0.0
+google-generativeai>=0.7.0,<0.8.0
+python-dotenv>=1.0.0
+psycopg2-binary>=2.9.0
+markdown-it-py>=3.0.0,<4.0.0
