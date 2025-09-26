@@ -38,7 +38,6 @@ class CollegeOverviewGenerator:
                 temperature=self.config.temperature
             )
             
-            # Load overview prompt
             self.prompt_template = OverviewPrompt().overview_prompt
             
             logger.info("CollegeOverviewGenerator initialized successfully")
@@ -56,6 +55,15 @@ class CollegeOverviewGenerator:
             
             if not college:
                 raise CollegeNotFoundError(str(college_id), "ID")
+
+            # Extract cleaned_raw and remove excluded keys from Data_Collection_Summary
+            raw_data = college.cleaned_raw.copy()
+            if 'Data_Collection_Summary' in raw_data:
+                data_summary = raw_data['Data_Collection_Summary'].copy()
+                # Remove the unwanted keys from Data_Collection_Summary
+                for key in ['Long_Summary', 'Short_Overview']:
+                    data_summary.pop(key, None)
+                raw_data['Data_Collection_Summary'] = data_summary
             
             formatted_prompt = self.prompt_template.format(
                 college_name=college.college_name,
@@ -67,7 +75,8 @@ class CollegeOverviewGenerator:
                 faculty_members=getattr(college, 'faculty_members', ''),
                 faculty_student_ratio=getattr(college, 'faculty_student_ratio', ''),
                 total_courses=getattr(college, 'total_courses', ''),
-                departments=getattr(college, 'departments', '')
+                departments=getattr(college, 'departments', ''),
+                raw_data=raw_data
             )
             
             response = self.llm.invoke([HumanMessage(content=formatted_prompt)])

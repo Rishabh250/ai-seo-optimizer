@@ -14,13 +14,14 @@ class OverviewPrompt:
                 "faculty_members",
                 "faculty_student_ratio", 
                 "total_courses",
-                "departments"
+                "departments",
+                "raw_data"
             ],
             template="""
-**Shiksha.com Authentic Pattern Generation Prompt**
+**Authentic Pattern Generation Prompt**
 
 **Primary Instruction:**
-Generate college summaries following Shiksha.com's exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
+Generate college overview following exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
 
 **College Data:**
 - College Name: {college_name}
@@ -33,10 +34,13 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 - Faculty Student Ratio: {faculty_student_ratio}
 - Total Courses: {total_courses}
 - Departments: {departments}
+- Raw Data: {raw_data} (that it as a reference for the overview)
 
-*Note: Use the college data to generate the overview, and if any data is not available, remove it from the overview.*
+**CONTENT REFERENCE:** USE College Data to generate the overview (mainly use key data points from the raw data and college data), and if any data is not available, remove it from the overview.
 
-**Critical Shiksha.com Content Patterns (MANDATORY):**
+**STRICT REQUIREMENT: Do not use competitors name in the overview like Shiksha.com, Careers360, Collegedunia, etc.**
+
+**Critical Authentic Content Patterns (MANDATORY):**
 
 **1. Statistical Integration Style:**
 - Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
@@ -60,13 +64,10 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 - Scatter multiple accreditation mentions: *"recognised by AICTE, UGC, and [Regional Body]"*
 - Repeat ranking information in different contexts
 - Mix promotional language with factual limitations
-- Include recognition statements: *"recognized as one of the **Top [Category]** in [Survey Year]"*
 
 **5. Natural Content Imperfections (ESSENTIAL):**
 - **Mixed terminology:** Alternate between *"college,"* *"institute,"* *"university"*
 - **Redundant information:** Mention placement assistance multiple ways
-- **Percentage specificity:** Include oddly specific numbers like *"70% practical exposure and 30% theoretical"*
-- **Statistical awkwardness:** *"50+ guidance sessions"*, *"36+ online talks"*
 
 **Required Content Structure:**
 
@@ -74,7 +75,7 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 *"[Institution] was established in [Year] and is located in [City, State]. It is [promotional phrase]. The [institution] has been ranked [Number]th by [Source] [Year] under the [Category] category, and [Number]th by [Source] [Year] under the [Category] category. The college has [Number]+ tie-ups with [description] and provides [Percentage]% placement assistance to students."*
 
 **Paragraph 2: Recognition + Programs**
-*"[Institution Name] has been recognized as one of the [Achievement in Survey Year], securing the [Position] among [Category]. The institute is involved in various academic innovations, launching [specific programs/centers]."*
+*"[Institution Name] has been recognized as one of the [Achievement], securing the [Position] among [Category]. The institute is involved in various academic innovations, launching [specific programs/centers]."*
 
 **Paragraph 3: Courses + Accreditation**
 *"[Acronym] (a part of [Parent Organization]) offers UG, PG, and [other] courses to students. These courses are provided across [departments]. [Institution] has been recognised by the [Bodies]. [Institution] provides [program] programmes to students in affiliation with [university]. Further, [Institution] provides [programs] as flagship courses and focuses on [areas]. The institute offers [percentage]% practical exposure and [percentage]% theoretical exposure to the students."*
@@ -93,7 +94,6 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 - "one of the **top-ranked [category]** institutes"
 
 **Recognition Formulas:**
-- "recognized as one of the **Top [Category] of Eminence** in [Survey]"
 - "securing the **[position]** among [category]"
 - "has been ranked **[number]th** by [source]"
 
@@ -124,7 +124,7 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 
 **Output Requirements:**
 - Length: **200-300 words** for comprehensive coverage
-- Format: **Rich text output with bold and styling** that humans usually add
+- Format: **Rich text output with bold, italic and styling** that humans usually add
 - Institution Naming: **6-8 repetitions** throughout content
 - Information Density: Varied with natural clustering
 - Authenticity Level: *Institutional content writer style*, not AI-polished
@@ -134,7 +134,7 @@ Content must read like authentic institutional marketing content with natural im
 
 **OUTPUT FORMAT REQUIREMENTS:**
 - Generate content in **rich text format with human-like styling**
-- **USE bold and other formatting** that humans naturally add
+- **USE bold, italic and other formatting** that humans naturally add
 - Natural integration of *numbers* and **statistics**
 - **Well-formatted, styled text output**
 """

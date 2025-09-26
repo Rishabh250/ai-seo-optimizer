@@ -20,6 +20,9 @@ from src.core.campus_generator import CampusContentGenerator  # noqa: E402
 from src.core.course_generator import CourseContentGenerator  # noqa: E402
 from src.core.fees_generator import FeesContentGenerator  # noqa: E402
 from src.core.overview_generator import CollegeOverviewGenerator  # noqa: E402
+from src.core.overview_short_generator import (
+    CollegeOverviewShortGenerator,  # noqa: E402
+)
 from src.core.reviews_generator import ReviewsContentGenerator  # noqa: E402
 from src.models.generator import GeneratorConfig  # noqa: E402
 from src.services.ai_validation_service import AIValidationService  # noqa: E402
@@ -72,6 +75,12 @@ async def generate_campus(config: GeneratorConfig, college_id: int) -> str:
     """Generate campus content."""
     generator = CampusContentGenerator(config)
     return generator.generate_campus_by_college_id(college_id)
+
+
+async def generate_overview_short(config: GeneratorConfig, college_id: int) -> str:
+    """Generate overview short summary content."""
+    generator = CollegeOverviewShortGenerator(config)
+    return generator.generate_by_college_id(college_id)
 
 
 class ContentResponse:
@@ -213,7 +222,7 @@ async def main() -> int:
     """Main function."""
     parser = argparse.ArgumentParser(description="Simple AI Content Generator")
     parser.add_argument("--college-id", type=int, required=True, help="College ID")
-    parser.add_argument("--type", choices=["overview", "fees", "reviews", "courses", "campus"], default="overview", 
+    parser.add_argument("--type", choices=["overview", "fees", "reviews", "courses", "campus", "overview_short"], default="overview", 
                         help="Content type to generate")
     parser.add_argument("--api-key", help="Google API key")
     parser.add_argument("--ai-validation", action="store_true", help="Run AI validation")
@@ -252,6 +261,12 @@ async def main() -> int:
         if args.type == "campus":
             campus_content = await generate_campus(config, args.college_id)
             result = campus_content
+
+        if args.type == "overview_short":
+            overview_short_content = await generate_overview_short(config, args.college_id)
+            result = overview_short_content
+ 
+        print(result)
  
         if args.ai_validation and result:
             await run_ai_validation(result, args.college_id, args.type)

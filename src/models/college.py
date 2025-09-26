@@ -59,11 +59,11 @@ class College:
     city: str
     state: str
     data_summary: DataSummary
+    cleaned_raw: Dict[str, Any]
 
     @classmethod
     def from_college_data(cls, college_data: CollegeData) -> "College":
         """Create College from CollegeData."""
-        # Extract data summary from cleaned_raw
         cleaned_raw = college_data.cleaned_raw or {}
         data_collection_summary = cleaned_raw.get("Data_Collection_Summary", {})
         data_summary = DataSummary.from_dict(data_collection_summary)
@@ -73,7 +73,8 @@ class College:
             college_name=str(college_data.college_name or "the institute"),
             city=str(college_data.city or ""),
             state=str(college_data.state or ""),
-            data_summary=data_summary
+            data_summary=data_summary,
+            cleaned_raw=cleaned_raw
         )
 
     def to_prompt_vars(self) -> Dict[str, str]:

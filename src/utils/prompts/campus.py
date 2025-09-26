@@ -40,7 +40,7 @@ Generate campus facilities information following Shiksha.com's exact content pat
 - Embed facility numbers naturally: *"over [Number] acres"*, *"[Number]+ facilities"*, *"[Number]+ laboratories"*
 
 **2. Institution Name Repetition (AUTHENTIC PATTERN):**
-- Use full institution name **6-8 times** throughout short content
+- Use full institution name **2-4 times** throughout short content
 - Mix variations: *"[Full Name]"*, *"[Acronym]"*, *"[Short Name]"*
 - Include parenthetical clarifications: *"([Acronym] a part of [Parent Organization])"*
 - Repeat institution name even when it feels redundant
@@ -67,20 +67,13 @@ Generate campus facilities information following Shiksha.com's exact content pat
 - **Statistical awkwardness:** *"50+ guidance sessions"*, *"36+ online talks"*, *"[Number]+ facilities available"*
 
 **Required Content Structure:**
+*Paragraph 1: Campus**
+*"[Acronym] (a part of [Parent Organization]) offers various campus facilities for different programs. These facilities are provided across [departments]. {college_name} provides [program] programmes with campus facilities. Further, {college_name} provides [programs] as flagship courses and focuses on [areas]. The institute offers [percentage]% practical exposure and [percentage]% theoretical exposure to the students."*
 
-**Paragraph 1: Campus Overview + Rankings**
-*"{college_name} campus spans over [Number] acres with state-of-the-art infrastructure and modern facilities. The {college_name} has been ranked [Number]th by [Source] [Year] under the [Category] category. The institute provides [Number]+ facilities including [examples] to ensure holistic development of students. {college_name} campus is equipped with [Number]+ laboratories and [Number]+ specialized centers."*
-
-**Paragraph 2: Recognition + Academic Facilities**
-*"{college_name} has been recognized as one of the Top [Category] in [Survey Year], securing the [Position] among [Category]. {college_name} has [Number] smart classrooms with modern teaching aids and [Number]+ computer laboratories. The institute provides [Number] research laboratories and [Number] specialized workshops. {college_name} also houses [Number] digital libraries with [Number]+ books and online resources."*
-
-**Paragraph 3: Campus + Accreditation**
-*"[Acronym] (a part of [Parent Organization]) offers various campus facilities for different programs. These facilities are provided across [departments]. {college_name} has been recognised by the AICTE, UGC, and [Bodies]. {college_name} provides [program] programmes with campus facilities in affiliation with [university]. Further, {college_name} provides [programs] as flagship courses and focuses on [areas]. The institute offers [percentage]% practical exposure and [percentage]% theoretical exposure to the students."*
-
-**Paragraph 4: Residential + Sports Facilities**
+**Paragraph 2: Residential + Sports Facilities**
 *"The institute is located in a sprawling [Number]-acre campus, and is equipped with the latest innovations and facilities. {college_name} offers [Number] hostels accommodating [Number]+ students with modern amenities. The institute provides [Number] sports complexes and [Number] playgrounds. {college_name} also has [Number] gymnasiums and [Number] swimming pools for student recreation."*
 
-**Paragraph 5: Additional Amenities + Services**
+**Paragraph 3: Additional Amenities + Services**
 *"{college_name} is driven and promoted by [description]. {college_name} also offers [Number] cafeterias, [Number] medical centers, and [Number] banking facilities. The institute provides [Number]+ parking spaces and [Number] security posts. {college_name} ensures [Number]% campus coverage with modern amenities."*
 
 **Authentic Language Patterns:**
@@ -105,7 +98,7 @@ Generate campus facilities information following Shiksha.com's exact content pat
 **Content Quality Control Requirements:**
 
 ***Natural Imperfection Checklist:***
-- Institution name repeated **6+ times**
+- Institution name repeated **2-4 times**
 - Mixed terminology (*college/institute/university/facilities/infrastructure/amenities*)
 - Awkward transitions between topics
 - Statistical clustering without smooth flow
@@ -122,9 +115,9 @@ Generate campus facilities information following Shiksha.com's exact content pat
 - Mixed promotional and limitation language
 
 **Output Requirements:**
-- Length: **200-300 words** for comprehensive coverage
+- Length: **100-200 words** for comprehensive coverage
 - Format: **Plain text output without any formatting**
-- Institution Naming: **6-8 repetitions** throughout content
+- Institution Naming: **2-4 repetitions** throughout content
 - Information Density: Varied with natural clustering
 - Authenticity Level: *Institutional content writer style*, not AI-polished
 

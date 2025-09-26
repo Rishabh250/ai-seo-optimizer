@@ -11,7 +11,7 @@ import os
 import sys
 import uuid
 from pathlib import Path
-from typing import Any
+from typing import Any  # noqa: F401
 
 # Add the project root to sys.path
 _THIS_DIR = Path(__file__).resolve().parent
@@ -22,6 +22,9 @@ from src.core.campus_generator import CampusContentGenerator  # noqa: E402
 from src.core.course_generator import CourseContentGenerator  # noqa: E402
 from src.core.fees_generator import FeesContentGenerator  # noqa: E402
 from src.core.overview_generator import CollegeOverviewGenerator  # noqa: E402
+from src.core.overview_short_generator import (
+    CollegeOverviewShortGenerator,  # noqa: E402
+)
 from src.core.reviews_generator import ReviewsContentGenerator  # noqa: E402
 from src.models.generator import GeneratorConfig  # noqa: E402
 from src.services.ai_validation_service import AIValidationService  # noqa: E402
@@ -242,6 +245,18 @@ async def generate_campus_content(config: GeneratorConfig, college_id: int) -> s
         return ""
 
 
+async def generate_overview_short_content(config: GeneratorConfig, college_id: int) -> str:
+    """Generate overview short summary content."""
+    try:
+        generator = CollegeOverviewShortGenerator(config)
+        overview_short_content = generator.generate_by_college_id(college_id)
+        logger.info(f"📝 Generated overview short content ({len(overview_short_content)} chars)")
+        return overview_short_content
+    except Exception as e:
+        logger.error(f"❌ Failed to generate overview short content: {e}")
+        return ""
+
+
 async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_validation: bool = True) -> dict:
     """Process all content tabs for a college."""
     results = {
@@ -249,7 +264,8 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
         "fees": False,
         "reviews": False,
         "all_courses": False,
-        "campus": False
+        "campus": False,
+        "overview_short": False
     }
     
     total_tabs = len(results)
@@ -260,7 +276,7 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
     
     # Generate Overview Content
     try:
-        logger.info("📄 [1/5] Generating overview content...")
+        logger.info("📄 [1/6] Generating overview content...")
         overview_content = await generate_overview_content(config, college_id)
         if overview_content:
             success = await generate_and_save_content(
@@ -269,17 +285,17 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
             results["overview"] = success
             if success:
                 completed_tabs += 1
-                logger.info("✅ [1/5] Overview content completed successfully")
+                logger.info("✅ [1/6] Overview content completed successfully")
             else:
-                logger.error("❌ [1/5] Overview content failed to save")
+                logger.error("❌ [1/6] Overview content failed to save")
         else:
-            logger.error("❌ [1/5] Overview content generation failed")
+            logger.error("❌ [1/6] Overview content generation failed")
     except Exception as e:
-        logger.error(f"❌ [1/5] Overview content error: {e}")
+        logger.error(f"❌ [1/6] Overview content error: {e}")
     
     # Generate Fees Content
     try:
-        logger.info("💰 [2/5] Generating fees content...")
+        logger.info("💰 [2/6] Generating fees content...")
         fees_content = await generate_fees_content(config, college_id)
         if fees_content:
             success = await generate_and_save_content(
@@ -288,17 +304,17 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
             results["fees"] = success
             if success:
                 completed_tabs += 1
-                logger.info("✅ [2/5] Fees content completed successfully")
+                logger.info("✅ [2/6] Fees content completed successfully")
             else:
-                logger.error("❌ [2/5] Fees content failed to save")
+                logger.error("❌ [2/6] Fees content failed to save")
         else:
-            logger.error("❌ [2/5] Fees content generation failed")
+            logger.error("❌ [2/6] Fees content generation failed")
     except Exception as e:
-        logger.error(f"❌ [2/5] Fees content error: {e}")
+        logger.error(f"❌ [2/6] Fees content error: {e}")
     
     # Generate Reviews Content
     try:
-        logger.info("⭐ [3/5] Generating reviews content...")
+        logger.info("⭐ [3/6] Generating reviews content...")
         reviews_content = await generate_reviews_content(config, college_id)
         if reviews_content:
             success = await generate_and_save_content(
@@ -307,17 +323,17 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
             results["reviews"] = success
             if success:
                 completed_tabs += 1
-                logger.info("✅ [3/5] Reviews content completed successfully")
+                logger.info("✅ [3/6] Reviews content completed successfully")
             else:
-                logger.error("❌ [3/5] Reviews content failed to save")
+                logger.error("❌ [3/6] Reviews content failed to save")
         else:
-            logger.error("❌ [3/5] Reviews content generation failed")
+            logger.error("❌ [3/6] Reviews content generation failed")
     except Exception as e:
-        logger.error(f"❌ [3/5] Reviews content error: {e}")
+        logger.error(f"❌ [3/6] Reviews content error: {e}")
     
     # Generate Courses Content
     try:
-        logger.info("📚 [4/5] Generating courses content...")
+        logger.info("📚 [4/6] Generating courses content...")
         courses_content = await generate_courses_content(config, college_id)
         if courses_content:
             success = await generate_and_save_content(
@@ -326,17 +342,17 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
             results["all_courses"] = success
             if success:
                 completed_tabs += 1
-                logger.info("✅ [4/5] Courses content completed successfully")
+                logger.info("✅ [4/6] Courses content completed successfully")
             else:
-                logger.error("❌ [4/5] Courses content failed to save")
+                logger.error("❌ [4/6] Courses content failed to save")
         else:
-            logger.error("❌ [4/5] Courses content generation failed")
+            logger.error("❌ [4/6] Courses content generation failed")
     except Exception as e:
-        logger.error(f"❌ [4/5] Courses content error: {e}")
+        logger.error(f"❌ [4/6] Courses content error: {e}")
     
     # Generate Campus Content
     try:
-        logger.info("🏫 [5/5] Generating campus content...")
+        logger.info("🏫 [5/6] Generating campus content...")
         campus_content = await generate_campus_content(config, college_id)
         if campus_content:
             success = await generate_and_save_content(
@@ -345,13 +361,32 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
             results["campus"] = success
             if success:
                 completed_tabs += 1
-                logger.info("✅ [5/5] Campus content completed successfully")
+                logger.info("✅ [5/6] Campus content completed successfully")
             else:
-                logger.error("❌ [5/5] Campus content failed to save")
+                logger.error("❌ [5/6] Campus content failed to save")
         else:
-            logger.error("❌ [5/5] Campus content generation failed")
+            logger.error("❌ [5/6] Campus content generation failed")
     except Exception as e:
-        logger.error(f"❌ [5/5] Campus content error: {e}")
+        logger.error(f"❌ [5/6] Campus content error: {e}")
+    
+    # Generate Overview Short Content
+    try:
+        logger.info("📝 [6/6] Generating overview short content...")
+        overview_short_content = await generate_overview_short_content(config, college_id)
+        if overview_short_content:
+            success = await generate_and_save_content(
+                overview_short_content, college_id, "overview_short", run_ai_validation
+            )
+            results["overview_short"] = success
+            if success:
+                completed_tabs += 1
+                logger.info("✅ [6/6] Overview short content completed successfully")
+            else:
+                logger.error("❌ [6/6] Overview short content failed to save")
+        else:
+            logger.error("❌ [6/6] Overview short content generation failed")
+    except Exception as e:
+        logger.error(f"❌ [6/6] Overview short content error: {e}")
     
     # Summary
     logger.info(f"🎯 Content generation summary for college {college_id}:")
@@ -361,6 +396,7 @@ async def process_all_tabs(college_id: int, config: GeneratorConfig, run_ai_vali
     logger.info(f"   ⭐ Reviews: {'✅' if results['reviews'] else '❌'}")
     logger.info(f"   📚 Courses: {'✅' if results['all_courses'] else '❌'}")
     logger.info(f"   🏫 Campus: {'✅' if results['campus'] else '❌'}")
+    logger.info(f"   📝 Overview Short: {'✅' if results['overview_short'] else '❌'}")
     
     return results
 
@@ -391,8 +427,6 @@ async def main() -> int:
     try:
         if args.dry_run:
             logger.info("🔍 DRY RUN MODE - Content will be generated but not saved")
-            # In dry run mode, we could just generate without saving
-            # For now, we'll process normally since the persistence logic handles this
         
         results = await process_all_tabs(args.college_id, config, run_ai_validation)
         

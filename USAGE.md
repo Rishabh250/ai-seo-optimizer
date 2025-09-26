@@ -74,6 +74,10 @@ Each script processes the following content types in order:
    - Generates campus infrastructure content
    - Covers facilities, laboratories, amenities, etc.
 
+6. **Overview Short** (`overview_short` tab)
+   - Generates short summary of college overview
+   - Concise institutional marketing content with authentic patterns
+
 ## Database Integration
 
 The scripts automatically:
@@ -97,37 +101,41 @@ When AI validation is enabled:
 ```
 INFO:🏫 Processing college ID: 4141
 INFO:🤖 AI Validation: Enabled
-INFO:📊 Processing 5 content types with AI validation: True
+INFO:📊 Processing 6 content types with AI validation: True
 
-INFO:📄 [1/5] Generating overview content...
-INFO:✅ [1/5] Overview content completed successfully
+INFO:📄 [1/6] Generating overview content...
+INFO:✅ [1/6] Overview content completed successfully
 
-INFO:💰 [2/5] Generating fees content...  
-INFO:✅ [2/5] Fees content completed successfully
+INFO:💰 [2/6] Generating fees content...  
+INFO:✅ [2/6] Fees content completed successfully
 
-INFO:⭐ [3/5] Generating reviews content...
-INFO:✅ [3/5] Reviews content completed successfully
+INFO:⭐ [3/6] Generating reviews content...
+INFO:✅ [3/6] Reviews content completed successfully
 
-INFO:📚 [4/5] Generating courses content...
-INFO:✅ [4/5] Courses content completed successfully
+INFO:📚 [4/6] Generating courses content...
+INFO:✅ [4/6] Courses content completed successfully
 
-INFO:🏫 [5/5] Generating campus content...
-INFO:✅ [5/5] Campus content completed successfully
+INFO:🏫 [5/6] Generating campus content...
+INFO:✅ [5/6] Campus content completed successfully
+
+INFO:📝 [6/6] Generating overview short content...
+INFO:✅ [6/6] Overview short content completed successfully
 
 INFO:🎯 Content generation summary for college 4141:
-INFO:   📊 Completed: 5/5 tabs
+INFO:   📊 Completed: 6/6 tabs
 INFO:   📄 Overview: ✅
 INFO:   💰 Fees: ✅  
 INFO:   ⭐ Reviews: ✅
 INFO:   📚 Courses: ✅
 INFO:   🏫 Campus: ✅
+INFO:   📝 Overview Short: ✅
 ```
 
 ### Batch Processing Summary:
 ```
 INFO:📊 BATCH PROCESSING SUMMARY
-INFO:✅ College 4141: SUCCESS (5/5 tabs)
-INFO:⚠️ College 4142: PARTIAL (4/5 tabs)
+INFO:✅ College 4141: SUCCESS (6/6 tabs)
+INFO:⚠️ College 4142: PARTIAL (5/6 tabs)
 INFO:❌ College 4143: FAILED - API key not valid
 
 INFO:📈 FINAL STATISTICS:
