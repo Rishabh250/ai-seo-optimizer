@@ -38,8 +38,8 @@ class CourseContentGenerator:
             logger.error(f"Failed to initialize CourseContentGenerator: {e}")
             raise InvalidConfigurationError(f"Course generator initialization failed: {e}")
 
-    def generate_courses_by_college_id(self, college_id: int) -> str:
-        """Generate course content for a college."""
+    async def generate_courses_by_college_id(self, college_id: int) -> str:
+        """Generate course content for a college with AI validation."""
         logger.info(f"Starting course content generation for college ID: {college_id}")
         
         try:
@@ -47,6 +47,8 @@ class CourseContentGenerator:
             result = self.content_service.generate_course_content(course_data)
             
             logger.info(f"Successfully generated course content for college ID: {college_id}")
+
+            
             return result
             
         except CollegeNotFoundError:

@@ -6,6 +6,7 @@ from typing import Any, Dict, List
 
 from markdown_it import MarkdownIt
 from markdown_it.token import Token
+from mdit_plain.renderer import RendererPlain
 
 from ..models.markdown import ConversionResult, MarkdownElement
 from ..utils.exceptions import ContentGenerationError
@@ -68,23 +69,6 @@ class MarkdownConverterService:
         except Exception as e:
             logger.error(f"Error converting markdown: {e}")
             raise ContentGenerationError(f"Markdown conversion failed: {e}")
-
-    def convert_to_html(self, markdown_text: str) -> str:
-        """Convert markdown to HTML only."""
-        try:
-            return self.md.render(markdown_text)
-        except Exception as e:
-            logger.error(f"Error converting markdown to HTML: {e}")
-            raise ContentGenerationError(f"HTML conversion failed: {e}")
-
-    def convert_to_json(self, markdown_text: str) -> List[Dict[str, Any]]:
-        """Convert markdown to JSON structure only."""
-        try:
-            tokens = self.md.parse(markdown_text)
-            return self._tokens_to_json(tokens)
-        except Exception as e:
-            logger.error(f"Error converting markdown to JSON: {e}")
-            raise ContentGenerationError(f"JSON conversion failed: {e}")
 
     def _tokens_to_json(self, tokens: List[Token]) -> List[Dict[str, Any]]:
         """Convert markdown tokens to JSON structure."""
@@ -216,3 +200,17 @@ class MarkdownConverterService:
         except Exception as e:
             logger.error(f"Error saving result to files: {e}")
             raise ContentGenerationError(f"Failed to save files: {e}")
+
+    def md_to_text(self, markdown_text: str) -> str:
+        """Convert markdown text to plain text."""
+        parser = MarkdownIt(renderer_cls=RendererPlain)
+        plain_text = parser.render(markdown_text)
+        return plain_text
+
+    def md_to_html(self, markdown_text: str) -> str:
+        """Convert markdown text to HTML."""
+        try:
+            return self.md.render(markdown_text)
+        except Exception as e:
+            logger.error(f"Error converting markdown to HTML: {e}")
+            raise ContentGenerationError(f"HTML conversion failed: {e}")

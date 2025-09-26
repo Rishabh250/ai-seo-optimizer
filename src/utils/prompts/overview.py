@@ -124,7 +124,7 @@ Generate college summaries following Shiksha.com's exact content patterns that s
 
 **Output Requirements:**
 - Length: **200-300 words** for comprehensive coverage
-- Format: **Rich text output with bold, italic and styling** that humans usually add
+- Format: **Rich text output with bold and styling** that humans usually add
 - Institution Naming: **6-8 repetitions** throughout content
 - Information Density: Varied with natural clustering
 - Authenticity Level: *Institutional content writer style*, not AI-polished
@@ -134,7 +134,7 @@ Content must read like authentic institutional marketing content with natural im
 
 **OUTPUT FORMAT REQUIREMENTS:**
 - Generate content in **rich text format with human-like styling**
-- **USE bold, italic and other formatting** that humans naturally add
+- **USE bold and other formatting** that humans naturally add
 - Natural integration of *numbers* and **statistics**
 - **Well-formatted, styled text output**
 """

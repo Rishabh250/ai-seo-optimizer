@@ -11,4 +11,8 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "psycopg2-binary>=2.9.0",
     "markdown-it-py>=3.0.0,<4.0.0",
+    "markdown>=3.9",
+    "bs4>=0.0.2",
+    "markdown-to-json>=2.1.2",
+    "mdit-plain>=1.0.1",
 ]
