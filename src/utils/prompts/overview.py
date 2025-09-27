@@ -15,7 +15,9 @@ class OverviewPrompt:
                 "faculty_student_ratio", 
                 "total_courses",
                 "departments",
-                "raw_data"
+                "raw_data",
+                "ranking_data",
+                "courses"
             ],
             template="""
 **Authentic Pattern Generation Prompt**
@@ -34,13 +36,16 @@ Generate college overview following exact content patterns that successfully byp
 - Faculty Student Ratio: {faculty_student_ratio}
 - Total Courses: {total_courses}
 - Departments: {departments}
+- Courses Data: {courses} (use it for courses information, and if not available, remove it from the overview)
+- Ranking Data: {ranking_data} (use it for ranking information, and if not available, remove it from the overview)
 - Raw Data: {raw_data} (that it as a reference for the overview)
 
 **CONTENT REFERENCE:** USE College Data to generate the overview (mainly use key data points from the raw data and college data), and if any data is not available, remove it from the overview.
 
 **STRICT REQUIREMENT: Do not use competitors name in the overview like Shiksha.com, Careers360, Collegedunia, etc.**
 
-**Critical Authentic Content Patterns (MANDATORY):**
+**INSTRUCTION:** 
+Don't add title like Overview, Summary, etc.**
 
 **1. Statistical Integration Style:**
 - Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
@@ -74,16 +79,13 @@ Generate college overview following exact content patterns that successfully byp
 **Paragraph 1: Basic Information + Rankings**
 *"[Institution] was established in [Year] and is located in [City, State]. It is [promotional phrase]. The [institution] has been ranked [Number]th by [Source] [Year] under the [Category] category, and [Number]th by [Source] [Year] under the [Category] category. The college has [Number]+ tie-ups with [description] and provides [Percentage]% placement assistance to students."*
 
-**Paragraph 2: Recognition + Programs**
-*"[Institution Name] has been recognized as one of the [Achievement], securing the [Position] among [Category]. The institute is involved in various academic innovations, launching [specific programs/centers]."*
+**Paragraph 2: Courses + Accreditation**
+*"[Acronym] (a part of [Parent Organization]) offers UG, PG, and [other] courses to students. These courses are provided across [departments]. [Institution] has been recognised by the [Bodies]. [Institution] provides [program] programmes to students in affiliation with [university]. Further, [Institution] provides [programs] as flagship courses and focuses on [areas]."*
 
-**Paragraph 3: Courses + Accreditation**
-*"[Acronym] (a part of [Parent Organization]) offers UG, PG, and [other] courses to students. These courses are provided across [departments]. [Institution] has been recognised by the [Bodies]. [Institution] provides [program] programmes to students in affiliation with [university]. Further, [Institution] provides [programs] as flagship courses and focuses on [areas]. The institute offers [percentage]% practical exposure and [percentage]% theoretical exposure to the students."*
-
-**Paragraph 4: Campus + Faculty**
+**Paragraph 3: Campus + Faculty**
 *"The institute is located in a [description] [number]-acre campus, and is equipped with the latest innovations and facilities. [Institution] has launched [initiatives], showcasing their commitment to [values] development."*
 
-**Paragraph 5: Additional Information**
+**Paragraph 4: Additional Information**
 *"[Institution] is driven and promoted by [description]. Located in [city], this reputed [institution type] accepts [exam] scores and conducts [own exam] for admissions. The institute offers opportunities through [number]+ [activities] and [number]+ [programs]. [Institution] faculty are professionals with years of [experience type]."*
 
 **Authentic Language Patterns:**
@@ -99,7 +101,6 @@ Generate college overview following exact content patterns that successfully byp
 
 **Program Description Patterns:**
 - "focuses on *[area 1]*, *[area 2]*, & *[area 3]*"
-- "offers **[percentage]% practical exposure** and **[percentage]% theoretical exposure**"
 - "**flagship courses**" terminology
 - "across *[field]* and various other streams"
 

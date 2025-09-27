@@ -266,7 +266,9 @@ async def main() -> int:
             overview_short_content = await generate_overview_short(config, args.college_id)
             result = overview_short_content
  
+        print("--------------------------------")
         print(result)
+        print("--------------------------------")
  
         if args.ai_validation and result:
             await run_ai_validation(result, args.college_id, args.type)

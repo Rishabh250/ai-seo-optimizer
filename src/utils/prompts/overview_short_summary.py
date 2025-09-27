@@ -1,9 +1,9 @@
 from langchain.prompts import PromptTemplate
 
 
-class OverviewPrompt:
+class OverviewShortSummaryPrompt:
     def __init__(self):
-        OVERVIEW_PROMPT = PromptTemplate(
+        OVERVIEW_SHORT_SUMMARY_PROMPT = PromptTemplate(
             input_variables=[
                 "college_name",
                 "city", 
@@ -14,95 +14,122 @@ class OverviewPrompt:
                 "faculty_members",
                 "faculty_student_ratio", 
                 "total_courses",
-                "departments"
+                "departments",
+                "raw_data",
+                "ranking_data",
+                "courses"
             ],
             template="""
-# Prompt for Writing IIT Madras Style College Summaries
+**Authentic Pattern Generation Prompt**
 
-SAMPLE OF THE CONTENT:
-"Identified as an ‘Institute of Eminence', the Indian Institute of Technology Madras (Chennai IIT Madras or IITM) was established in 1959 as a public technical and research university. It is the third IIT to be set up by the Government of India and is autonomous in nature. Chennai IIT Campus, through its 16 departments, 4 national and 10 institute research centres offers more than 100 full-time/ part-time/ online courses at UG, PG, and doctoral levels across the Engineering, Science, Humanities, and Management. IIT Madras admissions are entrance-based. IIT Madras Campus accepts various national-level exams, such as JEE Advanced, for admission to specific courses. OpenAI has recently announced its first Learning Accelerator in India in collaboration with IIT Madras, Chennai."
+**Primary Instruction:**
+Generate college short summary of the overview following exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
 
-## Content Analysis Reference
-Based on the IIT Madras sample, generate content with these specific characteristics:
-- **Word count**: 115-125 words
-- **Sentence count**: 6-7 sentences
-- **Tone**: Official, informative, promotional
-- **Structure**: Statistical clustering with institutional authority
-- **Add some punctuation issues (i.e. comma heavy sentences) and natural information flow issues**
-
-## College Data Available:
+**College Data:**
 - College Name: {college_name}
 - City: {city}
 - State: {state}
 - Establishment Year: {establishment_year}
+- Campus Area: {campus_area}
+- Total Students: {total_students}
+- Faculty Members: {faculty_members}
+- Faculty Student Ratio: {faculty_student_ratio}
+- Total Courses: {total_courses}
 - Departments: {departments}
+- Courses Data: {courses} (use it for courses information, and if not available, remove it from the short summary)
+- Ranking Data: {ranking_data} (use it for ranking information, and if not available, remove it from the short summary)
+- Raw Data: {raw_data} (that it as a reference for the short summary)
 
-**NOTE: If any data field is missing, empty, or unavailable, EXCLUDE it from the summary. Do not fabricate, assume, or add any information not explicitly provided in the college data fields.**
+**CONTENT REFERENCE:** USE College Data to generate the short summary of the overview (mainly use key data points from the raw data and college data), and if any data is not available, remove it from the short summary.
 
-## Writing Instructions
+**STRICT REQUIREMENT: Do not use competitors name in the short summary like Shiksha.com, Careers360, Collegedunia, etc.**
 
-### Opening Formula
-Start with a prestigious credential or recognition in bold, followed by full institutional name with variations:
-- "Identified as **'[Recognition Status]'**, the {college_name} ({city} {state} or [Acronym]) was established in **{establishment_year}**" and  **other details**
+**Critical Authentic Content Patterns (MANDATORY):**
 
-### Content Structure Pattern
-1. **Sentence 1** (25-30 words): Prestigious recognition + establishment + basic classification
-2. **Sentence 2** (18-20 words): Historical context + governance/autonomy status
-3. **Sentence 3** (30-35 words): Statistical cluster - departments, centers, courses with bold numbers
-4. **Sentence 4** (5-6 words): Brief admission statement
-5. **Sentence 5** (15-18 words): Specific entrance exam requirements
-6. **Sentence 6** (15-20 words): Recent news/collaboration/achievement in bold
+**1. Statistical Integration Style:**
+- Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
+- Use exact ranking formula: *"The [institution] has been ranked [Number]th by [Source] [Year] under the [Category] category"*
+- Include multiple ranking mentions: *"[Number]th by [Source 1] and [Number]th by [Source 2]"*
+- Add collaboration numbers: *"[Number]+ tie-ups with renowned universities"*
 
-### Statistical Clustering Requirements
-- Use **bold formatting** for ALL numbers and key achievements
-- Include 4-6 numerical statistics: **{departments}** departments, **[number]** research centers, **{total_courses}+** courses
-- Group statistics in single complex sentence with multiple clauses
-- Mention course levels: "UG, PG, and doctoral levels"
-- Include broad academic areas: "Engineering, Science, Humanities, and Management"
+**2. Institution Name Repetition (AUTHENTIC PATTERN):**
+- Use full institution name **6-8 times** throughout short content
+- Mix variations: *"[Full Name]"*, *"[Acronym]"*, *"[Short Name]"*
+- Include parenthetical clarifications: *"([Acronym] a part of [Parent Organization])"*
+- Repeat institution name even when it feels redundant
 
-### Language Patterns
-- **Institutional Name Repetition**: Use full name, location variant, and acronym (3-4 mentions minimum)
-- **Formal Connectors**: "through its," "across the," "such as"
-- **Authority Markers**: "autonomous in nature," "Government of [Country]," "national-level exams"
-- **Promotional Elements**: Recognition badges, rankings, recent partnerships
+**3. Authentic Information Flow Issues:**
+- **Topic jumping:** Move between rankings, programs, facilities without smooth transitions
+- **Information clustering:** Group related statistics together abruptly
+- **Awkward transitions:** Use phrases like *"Further, [Institution] provides..."*
+- **Incomplete context:** Add parenthetical information that feels casually inserted
 
-### Required Elements
-- **Establishment year** in bold: **{establishment_year}**
-- **Numerical statistics** (departments, centers, courses) in bold
-- **Admission process** mention (entrance-based)
-- **Specific entrance exam** name
-- **Recent achievement/collaboration** in bold as closing
+**4. Authority Validation Redundancy:**
+- Scatter multiple accreditation mentions: *"recognised by AICTE, UGC, and [Regional Body]"*
+- Repeat ranking information in different contexts
+- Mix promotional language with factual limitations
 
-### SEO-Style Repetition Pattern
-- Institution name: Use 3 variations (Full name, Location name, Acronym)
-- Location mention: 2-3 times in different contexts ({city}, {state})
-- Course levels: Specify "full-time/part-time/online" options
+**5. Natural Content Imperfections (ESSENTIAL):**
+- **Mixed terminology:** Alternate between *"college,"* *"institute,"* *"university"*
+- **Redundant information:** Mention placement assistance multiple ways
 
-## Sample Framework
-"Identified as **'[Recognition Status]'**, the {college_name} ({city} {state} or [Acronym]) was established in **{establishment_year}** as a [classification]. It is the [ordinal position] [type] to be set up by the Government of [Country] and is autonomous in nature. {city} {state} Campus, through its **{departments}** departments, **[number]** [type] and **[number]** [type] research centres offers more than **{total_courses}** full-time/part-time/online courses at UG, PG, and doctoral levels across the [Field 1], [Field 2], [Field 3], and [Field 4]. {college_name} admissions are entrance-based. {college_name} Campus accepts various national-level exams, such as [Specific Exam], for admission to specific courses. **[Recent achievement/collaboration/news].**" and **other details**
+**Required Content Structure:**
 
-## Formatting Requirements
-- Use **bold** for: Numbers, achievements, recognition status, recent news
-- Use italics: Never (not in this style)
-- Punctuation: Standard academic punctuation with comma-heavy complex sentences and natural information flow issues
-- Capitalization: Proper nouns, official titles, exam names
+**Paragraph 1: Basic Information + Rankings + Courses**
+**{college_name}** is a distinguished [college_type] established in [Establishment Year] in **{city}, {state}**. The **{college_name}** offers a total of **{total_courses}** courses across various disciplines, a non-private college member. **[college_acronym]** is renowned; the *institute* has **{total_students}** students enrolled in various programs including **Engineering** and other specialized fields across its departments. This top-ranked premium institute (**{college_name}**) operates through more than **{departments}** specialized departments with over **{faculty_members}** faculty members. **[college_acronym]** is committed to academic excellence and is recognized by appropriate regulatory bodies (often referred to as a premier *college*).
 
-## Quality Markers
-The content should read like:
-- An official institutional profile
-- Statistical fact sheet in paragraph form
-- Authoritative reference material
-- Marketing-academic hybrid writing
+**Authentic Language Patterns:**
 
-## Word Count Distribution
-- Opening credential sentence: 25-30 words
-- Context/governance: 18-20 words  
-- Statistical cluster: 30-35 words
-- Admission statement: 5-6 words
-- Exam requirements: 15-18 words
-- Recent news/closing: 15-20 words
-- **Total target: 115-125 words**
+**Promotional Mixed with Factual:**
+- "**top ranked premium** [institution type]"
+- "reputed [institution] is a **non-[comparison]** member"
+- "one of the **top-ranked [category]** institutes"
+
+**Recognition Formulas:**
+- "securing the **[position]** among [category]"
+- "has been ranked **[number]th** by [source]"
+
+**Program Description Patterns:**
+- "focuses on *[area 1]*, *[area 2]*, & *[area 3]*"
+- "offers **[percentage]% practical exposure** and **[percentage]% theoretical exposure**"
+- "**flagship courses**" terminology
+- "across *[field]* and various other streams"
+
+**Content Quality Control Requirements:**
+
+***Natural Imperfection Checklist:***
+- Institution name repeated **6+ times**
+- Mixed terminology (*college/institute/university*)
+- Awkward transitions between topics
+- Statistical clustering without smooth flow
+- Natural number integration without formatting
+- Multiple ranking mentions
+- Redundant information presentation
+- Parenthetical clarifications included
+
+***Authentic Flow Issues (REQUIRED):***
+- Abrupt topic changes between paragraphs
+- Information presented in **institutional content writer style** (not polished narrative)
+- Natural redundancy in key information
+- Specific but awkwardly phrased details
+- Mixed promotional and limitation language
+
+**Output Requirements:**
+- Length: **80-120 words** for comprehensive coverage
+- Format: **Rich text output with bold, italic and styling** that humans usually add
+- Institution Naming: **6-8 repetitions** throughout content
+- Information Density: Varied with natural clustering
+- Authenticity Level: *Institutional content writer style*, not AI-polished
+
+***Final Verification:***
+Content must read like authentic institutional marketing content with natural imperfections, redundancies, and flow issues that characterize real human-written educational content rather than AI-generated polished text.
+
+**OUTPUT FORMAT REQUIREMENTS:**
+- Generate content in **rich text format with human-like styling**
+- **USE bold, italic and other formatting** that humans naturally add
+- Natural integration of *numbers* and **statistics**
+- **Well-formatted, styled text output**
 """
         )
 
-        self.overview_prompt = OVERVIEW_PROMPT
+        self.overview_short_summary_prompt = OVERVIEW_SHORT_SUMMARY_PROMPT

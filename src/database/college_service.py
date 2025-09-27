@@ -20,12 +20,14 @@ class CollegeService:
         """Retrieve and process college data by ID."""
         try:
             results = self.db.fetch_colleges_by_id(college_id)
+            random_results = self.db.get_ranking_data_only(college_id)
             
             if not results:
                 logger.warning(f"No college found with ID {college_id}")
                 return None
             
             row = results[0]
+            ranking_data = random_results
             
             cleaned_raw_value = row.get('cleaned_raw', {})
             if isinstance(cleaned_raw_value, str):
@@ -40,9 +42,8 @@ class CollegeService:
                 cleaned_raw = {}
             
             row['cleaned_raw'] = cleaned_raw
-            
             college_data = CollegeData.from_db_row(row)
-            college = College.from_college_data(college_data)
+            college = College.from_college_data(college_data, ranking_data)
             
             logger.info(f"Successfully retrieved college data for ID {college_id}")
             return college

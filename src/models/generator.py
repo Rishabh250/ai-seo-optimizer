@@ -10,7 +10,7 @@ class GeneratorConfig:
     """Configuration for the content generator."""
     api_key: Optional[str] = None
     model: str = "gemini-2.5-flash"
-    temperature: float = 0.3
+    temperature: float = 0.6
 
     @classmethod
     def from_env(cls, api_key: Optional[str] = None) -> "GeneratorConfig":

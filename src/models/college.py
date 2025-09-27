@@ -2,7 +2,7 @@
 Data models for college information.
 """
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -50,6 +50,19 @@ class CollegeData:
             cleaned_raw=row.get("cleaned_raw", {})
         )
 
+@dataclass
+class CollegeRankingData:
+    """Raw college ranking data from database."""
+    college_id: Optional[int] = None
+    ranking_data: Optional[list] = None
+    
+    @classmethod
+    def from_db_row(cls, row: Dict[str, Any]) -> "CollegeRankingData":
+        """Create CollegeRankingData from database row."""
+        return cls(
+            college_id=row.get("college_id"),
+            ranking_data=row.get("ranking_data", [])
+        )
 
 @dataclass
 class College:
@@ -60,9 +73,10 @@ class College:
     state: str
     data_summary: DataSummary
     cleaned_raw: Dict[str, Any]
+    ranking_data: List[Dict[str, Any]]
 
     @classmethod
-    def from_college_data(cls, college_data: CollegeData) -> "College":
+    def from_college_data(cls, college_data: CollegeData, ranking_data: CollegeRankingData) -> "College":
         """Create College from CollegeData."""
         cleaned_raw = college_data.cleaned_raw or {}
         data_collection_summary = cleaned_raw.get("Data_Collection_Summary", {})
@@ -74,7 +88,8 @@ class College:
             city=str(college_data.city or ""),
             state=str(college_data.state or ""),
             data_summary=data_summary,
-            cleaned_raw=cleaned_raw
+            cleaned_raw=cleaned_raw,
+            ranking_data=ranking_data
         )
 
     def to_prompt_vars(self) -> Dict[str, str]:
