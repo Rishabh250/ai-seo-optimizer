@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Enhanced Bulk College Overview Generation Script with Start-From Feature
+Enhanced Bulk College Overview Generation Script with Concurrent Processing
 Fetches college IDs from the database and generates overview content starting from a specific point.
+Supports both sequential and concurrent processing with configurable workers.
 """
 
 import argparse
@@ -13,6 +14,8 @@ import time
 import uuid
 from pathlib import Path
 from typing import List, Optional
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 # Add the project root to sys.path
 _THIS_DIR = Path(__file__).resolve().parent
@@ -75,6 +78,7 @@ class EnhancedBulkOverviewGenerator:
             'retries': 0,
             'humanized': 0  # Count of colleges that needed humanization retries
         }
+        self.stats_lock = threading.Lock()  # Thread-safe stats updates
 
     def get_college_ids_from_point(self, start_from: Optional[int] = None, limit: Optional[int] = None) -> List[int]:
         """Fetch college IDs starting from a specific college ID."""
@@ -256,7 +260,8 @@ class EnhancedBulkOverviewGenerator:
                         ai_score = ai_validation_result.get('overall_score')
 
                         logger.info(f"🤖 AI validation completed for college {college_id} {attempt_prefix} - Score: {ai_score}")
-                        self.stats['ai_validated'] += 1
+                        with self.stats_lock:
+                            self.stats['ai_validated'] += 1
 
                         # Check if AI score is acceptable (less than 90%)
                         if ai_score is not None:
@@ -269,7 +274,8 @@ class EnhancedBulkOverviewGenerator:
                                 best_ai_detection = ai_detection
                                 # Track if this college needed humanization (more than 1 attempt)
                                 if attempts > 1:
-                                    self.stats['humanized'] += 1
+                                    with self.stats_lock:
+                                        self.stats['humanized'] += 1
                                 break
                             else:
                                 logger.warning(f"⚠️ AI score {ai_score_percentage:.2f}% is too high for college {college_id}")
@@ -283,13 +289,15 @@ class EnhancedBulkOverviewGenerator:
 
                                 if attempts < max_retries:
                                     logger.info(f"🔄 Retrying content generation for college {college_id} (attempt {attempts + 1}/{max_retries})")
-                                    self.stats['retries'] += 1
+                                    with self.stats_lock:
+                                        self.stats['retries'] += 1
                                     await asyncio.sleep(1)  # Brief pause before retry
                                     continue
                                 else:
                                     logger.warning(f"⚠️ Max retries reached for college {college_id}. Using best attempt (Score: {(best_ai_score * 100 if best_ai_score <= 1.0 else best_ai_score):.2f}%)")
                                     # This college needed humanization attempts
-                                    self.stats['humanized'] += 1
+                                    with self.stats_lock:
+                                        self.stats['humanized'] += 1
                                     break
                         else:
                             # No AI score available, use the content
@@ -331,7 +339,8 @@ class EnhancedBulkOverviewGenerator:
                     success = await self._persist_generated_result(result, college_id, "overview")
                     if success:
                         logger.info(f"💾 Successfully saved to database for college {college_id}")
-                        self.stats['saved_to_db'] += 1
+                        with self.stats_lock:
+                            self.stats['saved_to_db'] += 1
                     else:
                         logger.warning(f"⚠️ Failed to save to database for college {college_id}")
                 except Exception as e:
@@ -343,11 +352,11 @@ class EnhancedBulkOverviewGenerator:
             logger.error(f"❌ Failed to generate overview for college {college_id}: {e}")
             return False
 
-    async def process_colleges(self, college_ids: List[int], delay_seconds: float = 1.0, max_retries: int = 3) -> None:
-        """Process all colleges with optional delay between requests."""
+    async def process_colleges_sequential(self, college_ids: List[int], delay_seconds: float = 1.0, max_retries: int = 3) -> None:
+        """Process colleges sequentially (original method)."""
         self.stats['total'] = len(college_ids)
 
-        logger.info(f"🚀 Starting bulk overview generation for {len(college_ids)} colleges")
+        logger.info(f"🚀 Starting sequential overview generation for {len(college_ids)} colleges")
         logger.info(f"⏱️ Delay between requests: {delay_seconds} seconds")
 
         if self.save_to_db:
@@ -363,10 +372,11 @@ class EnhancedBulkOverviewGenerator:
 
             success = await self.generate_overview_for_college(college_id, max_retries)
 
-            if success:
-                self.stats['successful'] += 1
-            else:
-                self.stats['failed'] += 1
+            with self.stats_lock:
+                if success:
+                    self.stats['successful'] += 1
+                else:
+                    self.stats['failed'] += 1
 
             if i < len(college_ids) and delay_seconds > 0:
                 await asyncio.sleep(delay_seconds)
@@ -374,12 +384,83 @@ class EnhancedBulkOverviewGenerator:
         end_time = time.time()
         duration = end_time - start_time
 
-        self.print_summary(duration)
+        self.print_summary(duration, 1)
 
-    def print_summary(self, duration: float) -> None:
+    async def process_colleges_concurrent(self, college_ids: List[int], workers: int = 3, delay_seconds: float = 1.0, max_retries: int = 3) -> None:
+        """Process colleges concurrently with specified number of workers."""
+        self.stats['total'] = len(college_ids)
+
+        logger.info(f"🚀 Starting concurrent overview generation for {len(college_ids)} colleges")
+        logger.info(f"👥 Workers: {workers}")
+        logger.info(f"⏱️ Delay between worker batches: {delay_seconds} seconds")
+
+        if self.save_to_db:
+            logger.info("💾 Database saving: ENABLED")
+        if self.ai_validation:
+            logger.info("🤖 AI validation: ENABLED")
+            logger.info(f"🎭 Humanization retries: {max_retries} attempts for AI scores >90%")
+
+        start_time = time.time()
+
+        # Create semaphore to limit concurrent workers
+        semaphore = asyncio.Semaphore(workers)
+
+        async def process_with_semaphore(college_id: int, index: int) -> bool:
+            async with semaphore:
+                logger.info(f"📊 Progress: {index}/{len(college_ids)} ({(index/len(college_ids)*100):.1f}%) - College ID: {college_id} [Worker processing]")
+
+                success = await self.generate_overview_for_college(college_id, max_retries)
+
+                with self.stats_lock:
+                    if success:
+                        self.stats['successful'] += 1
+                        logger.info(f"✅ Worker completed college {college_id} successfully")
+                    else:
+                        self.stats['failed'] += 1
+                        logger.error(f"❌ Worker failed for college {college_id}")
+
+                # Optional delay between individual worker tasks
+                if delay_seconds > 0:
+                    await asyncio.sleep(delay_seconds / workers)  # Distribute delay across workers
+
+                return success
+
+        # Create tasks for all colleges
+        tasks = [
+            process_with_semaphore(college_id, i+1)
+            for i, college_id in enumerate(college_ids)
+        ]
+
+        # Process all tasks concurrently
+        logger.info(f"🎬 Starting concurrent processing with {workers} workers...")
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Handle any exceptions
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                logger.error(f"❌ Exception in worker for college {college_ids[i]}: {result}")
+                with self.stats_lock:
+                    self.stats['failed'] += 1
+
+        end_time = time.time()
+        duration = end_time - start_time
+
+        self.print_summary(duration, workers)
+
+    async def process_colleges(self, college_ids: List[int], workers: int = 1, delay_seconds: float = 1.0, max_retries: int = 3) -> None:
+        """Process colleges either sequentially or concurrently based on workers parameter."""
+        if workers <= 1:
+            await self.process_colleges_sequential(college_ids, delay_seconds, max_retries)
+        else:
+            await self.process_colleges_concurrent(college_ids, workers, delay_seconds, max_retries)
+
+    def print_summary(self, duration: float, workers: int = 1) -> None:
         """Print generation summary statistics."""
         logger.info("=" * 70)
-        logger.info("📈 ENHANCED BULK OVERVIEW GENERATION SUMMARY")
+        mode = "CONCURRENT" if workers > 1 else "SEQUENTIAL"
+        logger.info(f"📈 ENHANCED BULK OVERVIEW GENERATION SUMMARY ({mode})")
+        if workers > 1:
+            logger.info(f"👥 Workers Used: {workers}")
         logger.info("=" * 70)
         logger.info(f"🎯 Total Colleges: {self.stats['total']}")
         logger.info(f"✅ Successful: {self.stats['successful']}")
@@ -401,7 +482,7 @@ class EnhancedBulkOverviewGenerator:
 
 async def main() -> int:
     """Main function."""
-    parser = argparse.ArgumentParser(description="Enhanced bulk college overview generation with start-from capability")
+    parser = argparse.ArgumentParser(description="Enhanced bulk college overview generation with concurrent processing and start-from capability")
     parser.add_argument("--api-key", help="Google API key (or set GOOGLE_API_KEY env var)")
     parser.add_argument("--limit", type=int, help="Maximum number of colleges to process")
     parser.add_argument("--start-from", type=int, help="Start processing from this college ID")
@@ -420,6 +501,8 @@ async def main() -> int:
     parser.add_argument("--gptzero-api-key", help="GPTZero API key for AI validation (or set GPTZERO_API_KEY env var)")
     parser.add_argument("--max-retries", type=int, default=3,
                         help="Maximum retries for content with AI score >90%% (default: 3)")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="Number of concurrent workers (default: 1 for sequential processing)")
 
     args = parser.parse_args()
 
@@ -441,6 +524,16 @@ async def main() -> int:
     # Validate AI validation requirements
     if args.ai_validation and not (args.gptzero_api_key or os.getenv("GPTZERO_API_KEY")):
         logger.warning("⚠️ AI validation requested but no GPTZero API key provided. Using default key.")
+
+    # Validate workers parameter
+    if args.workers < 1:
+        logger.error("❌ Workers must be at least 1")
+        return 1
+    elif args.workers > 10:
+        logger.warning("⚠️ Using more than 10 workers may cause rate limiting issues")
+
+    if args.workers > 1:
+        logger.info(f"🔧 Concurrent processing enabled with {args.workers} workers")
 
     # Create configuration
     config = GeneratorConfig(api_key=api_key)
@@ -491,7 +584,7 @@ async def main() -> int:
             return 0
 
         # Process colleges
-        await bulk_generator.process_colleges(college_ids, args.delay, args.max_retries)
+        await bulk_generator.process_colleges(college_ids, args.workers, args.delay, args.max_retries)
 
         # Determine exit code based on results
         if bulk_generator.stats['successful'] == bulk_generator.stats['total']:
@@ -506,7 +599,7 @@ async def main() -> int:
 
     except KeyboardInterrupt:
         logger.info("⏹️ Process interrupted by user")
-        bulk_generator.print_summary(0)
+        bulk_generator.print_summary(0, args.workers if 'args' in locals() else 1)
         return 130
     except Exception as e:
         logger.error(f"❌ Enhanced bulk generation failed: {e}")

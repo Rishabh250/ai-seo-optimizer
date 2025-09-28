@@ -76,6 +76,16 @@ python3 scripts/generate_overviews_from.py --start-from 50 --limit 25 --delay 1.
 
 # Dry run to see what would be processed from a specific point
 python3 scripts/generate_overviews_from.py --start-from 100 --limit 10 --dry-run
+
+# CONCURRENT PROCESSING (New Feature)
+# Process with 3 concurrent workers
+python3 scripts/generate_overviews_from.py --start-from 1 --limit 30 --workers 3 --save-to-db --ai-validation
+
+# High-performance concurrent processing with 5 workers
+python3 scripts/generate_overviews_from.py --start-from 1 --limit 100 --workers 5 --save-to-db --ai-validation --max-retries 3
+
+# Sequential processing (default, 1 worker)
+python3 scripts/generate_overviews_from.py --start-from 1 --limit 10 --workers 1 --save-to-db
 ```
 
 ### Overview Short Generation (Short College Summaries)
@@ -208,8 +218,11 @@ export DB_PASSWORD="your_db_password"
 ### Production-Ready Commands
 
 ```bash
-# Full overview generation with all features
+# Full overview generation with all features (sequential)
 python3 scripts/generate_overviews_from.py --start-from 1 --limit 1000 --save-to-db --ai-validation --max-retries 3 --delay 2.0
+
+# Full overview generation with concurrent processing (recommended for large batches)
+python3 scripts/generate_overviews_from.py --start-from 1 --limit 1000 --workers 3 --save-to-db --ai-validation --max-retries 3 --delay 1.0
 
 # Full overview_short generation with all features
 python3 scripts/generate_overview_short_from.py --start-from 1 --limit 1000 --save-to-db --ai-validation --max-retries 3 --delay 2.0
@@ -256,6 +269,7 @@ python3 scripts/generate_overviews_from.py --college-ids "45,67,89,123" --save-t
 - `--ai-validation`: Run AI detection validation
 - `--max-retries <number>`: Maximum retry attempts for AI scores >90% (default: 3)
 - `--delay <seconds>`: Delay between requests in seconds (default: 1.0)
+- `--workers <number>`: Number of concurrent workers (default: 1 for sequential processing)
 - `--dry-run`: Show what would be processed without actual generation
 - `--gptzero-api-key <key>`: Override GPTZero API key
 - `--api-key <key>`: Override Google AI API key
@@ -267,6 +281,15 @@ All enhanced scripts include:
 - **Humanization tracking**: Track which colleges required humanization retries
 - **Statistics reporting**: Detailed stats on retries, success rates, and processing times
 - **Score-based persistence**: Only save content if it meets AI detection thresholds
+
+### Concurrent Processing Features (New)
+
+Enhanced scripts now support:
+- **Configurable workers**: Set number of concurrent workers with `--workers` parameter
+- **Thread-safe processing**: Safe concurrent database operations and statistics tracking
+- **Performance optimization**: Significantly faster processing for large batches
+- **Rate limit management**: Distributed delays across workers to prevent API throttling
+- **Automatic fallback**: Sequential processing when workers=1 (default behavior)
 
 ## Script Categories
 
