@@ -30,14 +30,15 @@ Generate course information following exact content patterns that successfully b
 **STRICT REQUIREMENT: Do not use competitors name in the course information like Shiksha.com, Careers360, Collegedunia, etc.**
 *Note: If any data is not available, remove it from the course information.*
 
+**INSTRUCTION:** 
+Don't add title like Overview, Summary, etc.**
+
 **Mandatory Opening Formula for Course Content:**
 *"[Institution Name] offers over [Number] courses at UG, PG, and PhD levels in the streams of [Streams]. [Program] is the flagship course of [Institution] offered based on [Exam] scores. Besides, [Institution] also offers [additional programs] like [examples]."*
 
 **Critical Content Patterns (MANDATORY):**
 
 **1. Statistical Integration Style:**
-- Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
-- Use exact ranking formula: *"The [institution] has been ranked [Number]th by [Source] [Year] under the [Category] category"*
 - Include multiple ranking mentions: *"[Number]th by [Source 1] and [Number]th by [Source 2]"*
 - Add collaboration numbers: *"[Number]+ tie-ups with renowned universities"*
 - Embed course numbers naturally: *"offers over [Number] courses"*, *"in [Number] streams"*, *"[Number]+ specializations"*
@@ -58,15 +59,12 @@ Generate course information following exact content patterns that successfully b
 - Move between UG, PG, PhD, certificates without smooth transitions
 
 **4. Authority Validation Redundancy:**
-- Repeat ranking information in different contexts
 - Mix promotional language with factual limitations
 - Repeat course approval information in different contexts
 
 **5. Natural Content Imperfections (ESSENTIAL):**
 - **Mixed terminology:** Alternate between *"college,"* *"institute,"* *"university"*, *"courses,"* *"programs,"* *"degrees"*
 - **Redundant information:** Mention placement assistance multiple ways, flagship courses multiple ways
-- **Percentage specificity:** Include oddly specific numbers like *"70% practical exposure and 30% theoretical"*
-- **Statistical awkwardness:** *"50+ guidance sessions"*, *"36+ online talks"*, *"[Number]+ online courses"*
 
 **Required Content Structure:** (ONLY 1 PARAGRAPH)
 
@@ -79,19 +77,19 @@ Generate course information following exact content patterns that successfully b
 **Paragraph 3: Admission Criteria for programs at {college_name}**
 *"At {college_name}, admission to each program is based on a combination of academic merit, relevant qualifications, and program-specific requirements. While criteria may vary depending on the level and type of program, applicants can generally expect to meet following criteria*
 
-**UG Programs**
+**UG Programs** (IF UG programs are available, otherwise remove this section)
 - **Eligibility:** Completion of high school or an equivalent qualification.
 - **Minimum Academic Requirement:** A minimum of [Percentage/Grade] in high school, subject to program specific criteria.
 - **Entrance Exams:** Some programs may require an entrance exam. Specific details will be provided per program.
 - **Documents:** Transcripts, mark sheets, a motivation letter, and letters of recommendation if applicable.
 
-**PG Programs**
+**PG Programs** (IF PG programs are available, otherwise remove this section)
 - **Eligibility:** A recognized UG degree in a relevant field.
 - **Minimum Academic Requirement:** A minimum [CGPA/Percentage] in the UG degree, subject to specific program requirements.
 - **Entrance Exams:** Some programs may require standardized tests such as [Entrance exam 1] or [Entrance exam 2].
 - **Documents:** Academic transcripts, a statement of purpose, resume, and letters of recommendation.
 
-**PhD Programs**
+**PhD Programs** (IF PhD programs are available, otherwise remove this section)
 - **Eligibility:** A Master's degree in a relevant field.
 - **Minimum Academic Requirement:** A minimum of [CGPA/Percentage] in the Master's program, with a preference for applicants with research experience.
 - **Research Proposal:** A research proposal outlining your intended research area, subject to faculty approval.
@@ -100,13 +98,8 @@ Generate course information following exact content patterns that successfully b
 
 **Authentic Language Patterns:**
 
-**Recognition Formulas:**
-- "securing the **[position]** among [category]"
-- "has been ranked **[number]th** by [source]"
-
 **Program Description Patterns:**
 - "focuses on *[area 1]*, *[area 2]*, & *[area 3]*"
-- "offers **[percentage]% practical exposure** and **[percentage]% theoretical exposure**"
 - "*flagship courses*" terminology
 - "across [field] and various other streams"
 

@@ -26,6 +26,7 @@ import asyncio
 import os
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import List, Optional
 
@@ -104,6 +105,7 @@ class EnhancedFeesGenerator:
             content = result['content']
             ai_score = result.get('ai_score')
             ai_percentage = result.get('ai_percentage')
+            ai_detection_data = result.get('ai_detection')
             attempts = result.get('attempts', 1)
             humanized = result.get('humanized', False)
 
@@ -135,18 +137,19 @@ class EnhancedFeesGenerator:
 
                     # Persist content analysis if AI validation was performed
                     if ai_score is not None:
-                        can_persist = await self.content_analysis_service.persist_content_analysis(
+                        public_id = str(uuid.uuid4())
+                        await self.content_analysis_service.save_content_analysis_async(
+                            public_id=public_id,
                             college_id=college_id,
                             tab_name='fees',
-                            ai_detection_score=ai_score,
-                            content_markdown=content,
-                            html_content=html_content
+                            md_content=content,
+                            html_content=html_content,
+                            ai_detection=ai_detection_data,
+                            ai_score=ai_score,
+                            university_id=None,
+                            is_inserted=True,
                         )
-                        logger.info(f"Persisted content_analysis for college {college_id}, tab fees (can_persist={can_persist})")
-
-                        if not can_persist:
-                            logger.info(f"⏭️ Skipping content persistence for college {college_id} due to lower AI score")
-                            return True
+                        logger.info(f"Persisted content_analysis for college {college_id}, tab fees")
 
                     # Save to main content table
                     await self.content_analysis_service.upsert_college_tab_content(
@@ -207,11 +210,11 @@ class EnhancedFeesGenerator:
 
     async def process_colleges(self, college_ids: List[int], max_retries: int = 3, delay: float = 1.0,
                              dry_run: bool = False) -> None:
-        """Process multiple colleges with fees generation."""
+        """Process colleges sequentially (simplified)."""
         self.stats['total'] = len(college_ids)
         self.stats['start_time'] = time.time()
 
-        logger.info(f"🚀 Starting bulk fees generation for {len(college_ids)} colleges")
+        logger.info(f"🚀 Starting fees generation for {len(college_ids)} colleges")
         logger.info(f"⏱️ Delay between requests: {delay} seconds")
         logger.info(f"🎭 Humanization retries: {max_retries} attempts for AI scores >90%")
 
@@ -388,6 +391,7 @@ Processing Options:
                 end_info = f" to {args.end_at}" if args.end_at else ""
                 limit_info = f" (limited to {args.limit})" if args.limit else ""
                 logger.info(f"Found {len(college_ids)} colleges in range from {args.start_from}{end_info}{limit_info}")
+
 
         # Display processing information
         logger.info(f"📋 College ID range: {min(college_ids)} to {max(college_ids)}")

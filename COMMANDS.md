@@ -154,33 +154,6 @@ python3 scripts/generate_course_short_from.py --start-from 100 --limit 10 --dry-
 python3 scripts/generate_course_short_from.py --start-from 1 --limit 100 --save-to-db --ai-validation --max-retries 3
 ```
 
-## Legacy Bulk Generation Commands
-
-### Basic Bulk Generation (Legacy)
-
-```bash
-# Generate overviews for all colleges
-python3 scripts/generate_all_overviews.py --api-key "your_key_here"
-
-# Generate with database saving
-python3 scripts/generate_all_overviews.py --save-to-db
-
-# Generate with AI validation
-python3 scripts/generate_all_overviews.py --ai-validation --gptzero-api-key "your_key"
-
-# Generate with both database saving and AI validation
-python3 scripts/generate_all_overviews.py --save-to-db --ai-validation
-
-# Process specific colleges
-python3 scripts/generate_all_overviews.py --college-ids "1,4,5,10"
-
-# Process with limits and offsets
-python3 scripts/generate_all_overviews.py --limit 50 --offset 100
-
-# Dry run to see what would be processed
-python3 scripts/generate_all_overviews.py --dry-run --limit 10
-```
-
 ### All Tabs Processing
 
 ```bash

@@ -6,9 +6,9 @@ information including fee structures, scholarships, and accessibility details.
 """
 from typing import Any, Dict, List, Optional
 
-from .manager import DatabaseManager
 from ..utils.exceptions import CollegeNotFoundError, DatabaseConnectionError
 from ..utils.logging_config import get_logger
+from .manager import DatabaseManager
 
 logger = get_logger(__name__)
 
@@ -289,7 +289,6 @@ class FeesDataService:
             if not fees_data:
                 return {}
 
-            # Format data for prompt template (excluding scholarship information)
             formatted_data = {
                 'total_programs': str(fees_data['total_programs']),
                 'degree_levels': ', '.join([level for level, degrees in fees_data['degrees_by_level'].items() if degrees]),

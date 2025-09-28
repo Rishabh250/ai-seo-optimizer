@@ -10,6 +10,7 @@ import logging
 import os
 import sys
 import time
+import threading
 import uuid
 from pathlib import Path
 from typing import List, Optional
@@ -75,6 +76,7 @@ class EnhancedBulkCoursesGenerator:
             'retries': 0,
             'humanized': 0  # Count of colleges that needed humanization retries
         }
+        self.stats_lock = threading.Lock()  # Thread-safe stats updates
 
     def get_college_ids_from_point(self, start_from: Optional[int] = None, limit: Optional[int] = None) -> List[int]:
         """Fetch college IDs starting from a specific college ID."""
