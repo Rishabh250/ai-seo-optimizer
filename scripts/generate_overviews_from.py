@@ -16,8 +16,9 @@ from typing import List, Optional
 
 # Add the project root to sys.path
 _THIS_DIR = Path(__file__).resolve().parent
-if str(_THIS_DIR) not in sys.path:
-    sys.path.insert(0, str(_THIS_DIR))
+_PROJECT_ROOT = _THIS_DIR.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.core.overview_generator import CollegeOverviewGenerator
 from src.database.manager import DatabaseManager

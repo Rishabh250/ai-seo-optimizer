@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Enhanced Bulk College Course Short Generation Script with Start-From Feature
-Fetches college IDs from the database and generates course_short content starting from a specific point.
+Enhanced Bulk College Courses Generation Script with Start-From Feature
+Fetches college IDs from the database and generates courses content starting from a specific point.
 """
 
 import argparse
@@ -16,18 +16,17 @@ from typing import List, Optional
 
 # Add the project root to sys.path
 _THIS_DIR = Path(__file__).resolve().parent
-if str(_THIS_DIR) not in sys.path:
-    sys.path.insert(0, str(_THIS_DIR))
+_PROJECT_ROOT = _THIS_DIR.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
-from src.core.course_short_generator import CourseShortContentGenerator  # noqa: E402
-from src.database.manager import DatabaseManager  # noqa: E402
-from src.models.generator import GeneratorConfig  # noqa: E402
-from src.services.ai_validation_service import AIValidationService  # noqa: E402
-from src.services.content_analysis_service import ContentAnalysisService  # noqa: E402
-from src.services.markdown_converter_service import (  # noqa: E402
-    MarkdownConverterService,  # noqa: E402
-)
-from src.utils.logging_config import get_logger  # noqa: E402
+from src.core.course_generator import CourseContentGenerator
+from src.database.manager import DatabaseManager
+from src.models.generator import GeneratorConfig
+from src.services.ai_validation_service import AIValidationService
+from src.services.content_analysis_service import ContentAnalysisService
+from src.services.markdown_converter_service import MarkdownConverterService
+from src.utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -49,12 +48,12 @@ class ContentResponse:
         self.metadata = metadata or {}
 
 
-class EnhancedBulkCourseShortGenerator:
-    """Handles bulk generation of college course_short content with start-from capability."""
+class EnhancedBulkCoursesGenerator:
+    """Handles bulk generation of college courses content with start-from capability."""
 
     def __init__(self, config: GeneratorConfig, save_to_db: bool = False, ai_validation: bool = False):
         self.config = config
-        self.generator = CourseShortContentGenerator(config)
+        self.generator = CourseContentGenerator(config)
         self.db_manager = DatabaseManager()
         self.save_to_db = save_to_db
         self.ai_validation = ai_validation
@@ -143,7 +142,7 @@ class EnhancedBulkCourseShortGenerator:
             logger.error(f"Failed to fetch college IDs in range: {e}")
             return []
 
-    async def _persist_generated_result(self, result: ContentResponse, college_id: int, tab_name: str = "courses_short") -> bool:
+    async def _persist_generated_result(self, result: ContentResponse, college_id: int, tab_name: str = "courses") -> bool:
         """Advanced content persistence with AI score comparison and intelligent upserting."""
         try:
             new_ai_detection = (result.metadata or {}).get("ai_detection")
@@ -196,28 +195,28 @@ class EnhancedBulkCourseShortGenerator:
                 logger.info(f"Skipping tab content upsert due to higher AI score for college {college_id}, tab {tab_name}")
                 return True
 
-            # Upsert to college_tab_short_content - course_short maps to "all_courses" tab in short tables
+            # Upsert to college_tab_content - courses maps to "all_courses" tab
             try:
-                tab_name_for_db = "all_courses" if tab_name == "courses_short" else tab_name
-                await self.content_analysis_service.upsert_college_tab_short_content(
+                tab_name_for_db = "all_courses" if tab_name == "courses" else tab_name
+                await self.content_analysis_service.upsert_college_tab_content(
                     college_id=college_id,
                     tab_name=tab_name_for_db,
                     content_markdown=md_text,
                     html_content=html_text,
                 )
-                logger.info(f"Upserted short tab content for college {college_id}, tab {tab_name_for_db}")
+                logger.info(f"Upserted tab content for college {college_id}, tab {tab_name_for_db}")
                 return True
             except Exception as e:
-                logger.error(f"Failed to upsert short tab content for college {college_id}/{tab_name}: {e}")
+                logger.error(f"Failed to upsert tab content for college {college_id}/{tab_name}: {e}")
                 return False
         except Exception as e:
             logger.error(f"Failed to persist result for college {college_id}: {e}")
             return False
 
-    async def generate_course_short_for_college(self, college_id: int, max_retries: int = 3) -> bool:
-        """Generate course_short for a single college with AI score retry mechanism."""
+    async def generate_courses_for_college(self, college_id: int, max_retries: int = 3) -> bool:
+        """Generate courses for a single college with AI score retry mechanism."""
         try:
-            logger.info(f"📚 Generating course_short for college ID: {college_id}")
+            logger.info(f"📚 Generating courses for college ID: {college_id}")
 
             best_content = None
             best_ai_score = None
@@ -229,20 +228,20 @@ class EnhancedBulkCourseShortGenerator:
                 attempts += 1
                 attempt_prefix = f"(Attempt {attempts}/{max_retries})" if max_retries > 1 else ""
 
-                logger.info(f"🔄 {attempt_prefix} Generating course_short content for college {college_id}")
+                logger.info(f"🔄 {attempt_prefix} Generating courses content for college {college_id}")
 
-                # Generate the course_short content (async)
-                course_short_content = await self.generator.generate_course_short_by_college_id(college_id)
+                # Generate the courses content (async)
+                courses_content = await self.generator.generate_courses_by_college_id(college_id)
 
-                if not course_short_content:
+                if not courses_content:
                     logger.warning(f"⚠️ Empty content generated for college {college_id} on attempt {attempts}")
                     if attempts < max_retries:
                         continue
                     else:
                         return False
 
-                logger.info(f"✅ Successfully generated course_short for college {college_id} {attempt_prefix}")
-                logger.debug(f"Content length: {len(course_short_content)} characters")
+                logger.info(f"✅ Successfully generated courses for college {college_id} {attempt_prefix}")
+                logger.debug(f"Content length: {len(courses_content)} characters")
 
                 # Run AI validation if enabled
                 ai_detection = None
@@ -251,7 +250,7 @@ class EnhancedBulkCourseShortGenerator:
                 if self.ai_validation:
                     try:
                         logger.info(f"🤖 Running AI validation for college {college_id} {attempt_prefix}")
-                        text_content = self.markdown_converter.md_to_text(course_short_content)
+                        text_content = self.markdown_converter.md_to_text(courses_content)
                         ai_validation_result = await self.ai_validation_service.detect_ai_from_text(text_content)
 
                         ai_detection = ai_validation_result
@@ -266,7 +265,7 @@ class EnhancedBulkCourseShortGenerator:
 
                             if ai_score_percentage <= 90.0:
                                 logger.info(f"🎯 AI score {ai_score_percentage:.2f}% is acceptable for college {college_id}")
-                                best_content = course_short_content
+                                best_content = courses_content
                                 best_ai_score = ai_score
                                 best_ai_detection = ai_detection
                                 # Track if this college needed humanization (more than 1 attempt)
@@ -278,13 +277,13 @@ class EnhancedBulkCourseShortGenerator:
 
                                 # Keep track of the best (lowest) score so far
                                 if best_ai_score is None or ai_score < best_ai_score:
-                                    best_content = course_short_content
+                                    best_content = courses_content
                                     best_ai_score = ai_score
                                     best_ai_detection = ai_detection
                                     logger.info(f"🔄 Saved as best attempt so far (Score: {ai_score_percentage:.2f}%)")
 
                                 if attempts < max_retries:
-                                    logger.info(f"🔄 Retrying course_short generation for college {college_id} (attempt {attempts + 1}/{max_retries})")
+                                    logger.info(f"🔄 Retrying courses generation for college {college_id} (attempt {attempts + 1}/{max_retries})")
                                     self.stats['retries'] += 1
                                     await asyncio.sleep(1)  # Brief pause before retry
                                     continue
@@ -295,18 +294,18 @@ class EnhancedBulkCourseShortGenerator:
                                     break
                         else:
                             # No AI score available, use the content
-                            best_content = course_short_content
+                            best_content = courses_content
                             best_ai_detection = ai_detection
                             break
 
                     except Exception as e:
                         logger.error(f"❌ AI validation failed for college {college_id} {attempt_prefix}: {e}")
                         if not best_content:  # If this is our first attempt and validation failed
-                            best_content = course_short_content
+                            best_content = courses_content
                         break
                 else:
                     # No AI validation enabled, use the content
-                    best_content = course_short_content
+                    best_content = courses_content
                     break
 
             # Use the best content we generated
@@ -316,7 +315,7 @@ class EnhancedBulkCourseShortGenerator:
 
             # Update final stats
             final_score_pct = (best_ai_score * 100 if best_ai_score and best_ai_score <= 1.0 else best_ai_score) if best_ai_score else "N/A"
-            logger.info(f"📊 Using course_short content for college {college_id} with final AI score: {final_score_pct}%")
+            logger.info(f"📊 Using courses content for college {college_id} with final AI score: {final_score_pct}%")
 
             # Save to database if enabled
             if self.save_to_db:
@@ -330,7 +329,7 @@ class EnhancedBulkCourseShortGenerator:
                         metadata={"ai_detection": best_ai_detection} if best_ai_detection else {}
                     )
 
-                    success = await self._persist_generated_result(result, college_id, "courses_short")
+                    success = await self._persist_generated_result(result, college_id, "courses")
                     if success:
                         logger.info(f"💾 Successfully saved to database for college {college_id}")
                         self.stats['saved_to_db'] += 1
@@ -342,14 +341,14 @@ class EnhancedBulkCourseShortGenerator:
             return True
 
         except Exception as e:
-            logger.error(f"❌ Failed to generate course_short for college {college_id}: {e}")
+            logger.error(f"❌ Failed to generate courses for college {college_id}: {e}")
             return False
 
     async def process_colleges(self, college_ids: List[int], delay_seconds: float = 1.0, max_retries: int = 3) -> None:
         """Process all colleges with optional delay between requests."""
         self.stats['total'] = len(college_ids)
 
-        logger.info(f"🚀 Starting bulk course_short generation for {len(college_ids)} colleges")
+        logger.info(f"🚀 Starting bulk courses generation for {len(college_ids)} colleges")
         logger.info(f"⏱️ Delay between requests: {delay_seconds} seconds")
 
         if self.save_to_db:
@@ -363,7 +362,7 @@ class EnhancedBulkCourseShortGenerator:
         for i, college_id in enumerate(college_ids, 1):
             logger.info(f"📊 Progress: {i}/{len(college_ids)} ({(i/len(college_ids)*100):.1f}%) - College ID: {college_id}")
 
-            success = await self.generate_course_short_for_college(college_id, max_retries)
+            success = await self.generate_courses_for_college(college_id, max_retries)
 
             if success:
                 self.stats['successful'] += 1
@@ -382,7 +381,7 @@ class EnhancedBulkCourseShortGenerator:
     def print_summary(self, duration: float) -> None:
         """Print generation summary statistics."""
         logger.info("=" * 70)
-        logger.info("📈 ENHANCED BULK COURSE_SHORT GENERATION SUMMARY")
+        logger.info("📈 ENHANCED BULK COURSES GENERATION SUMMARY")
         logger.info("=" * 70)
         logger.info(f"🎯 Total Colleges: {self.stats['total']}")
         logger.info(f"✅ Successful: {self.stats['successful']}")
@@ -404,7 +403,7 @@ class EnhancedBulkCourseShortGenerator:
 
 async def main() -> int:
     """Main function."""
-    parser = argparse.ArgumentParser(description="Enhanced bulk college course_short generation with start-from capability")
+    parser = argparse.ArgumentParser(description="Enhanced bulk college courses generation with start-from capability")
     parser.add_argument("--api-key", help="Google API key (or set GOOGLE_API_KEY env var)")
     parser.add_argument("--limit", type=int, help="Maximum number of colleges to process")
     parser.add_argument("--start-from", type=int, help="Start processing from this college ID")
@@ -449,7 +448,7 @@ async def main() -> int:
     config = GeneratorConfig(api_key=api_key)
 
     # Create bulk generator with new options
-    bulk_generator = EnhancedBulkCourseShortGenerator(
+    bulk_generator = EnhancedBulkCoursesGenerator(
         config=config,
         save_to_db=args.save_to_db,
         ai_validation=args.ai_validation
@@ -512,7 +511,7 @@ async def main() -> int:
         bulk_generator.print_summary(0)
         return 130
     except Exception as e:
-        logger.error(f"❌ Enhanced bulk course_short generation failed: {e}")
+        logger.error(f"❌ Enhanced bulk courses generation failed: {e}")
         return 1
 
 

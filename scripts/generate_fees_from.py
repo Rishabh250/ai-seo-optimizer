@@ -26,10 +26,14 @@ import asyncio
 import os
 import sys
 import time
+from pathlib import Path
 from typing import List, Optional
 
 # Add the project root to the Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+_THIS_DIR = Path(__file__).resolve().parent
+_PROJECT_ROOT = _THIS_DIR.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.core.fees_generator import FeesContentGenerator
 from src.database.manager import DatabaseManager
