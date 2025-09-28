@@ -45,8 +45,8 @@ class CourseGeneratorService:
     def generate_course_content(self, course_data: CourseData) -> str:
         """Generate course content."""
         try:
-            # Extract key information for prompt
             key_info = course_data.extract_key_course_info()
+            course_data = course_data.course_data
             
             prompt_vars = {
                 "college_name": key_info.get("college_name", "the institution"),
@@ -54,7 +54,7 @@ class CourseGeneratorService:
                 "state": key_info.get("state", ""),
                 "establishment_year": key_info.get("establishment_year", ""),
                 "campus_area": key_info.get("campus_area", ""),
-                "courses": key_info.get("courses", "various courses")
+                "courses": course_data
             }
             
             logger.info(f"Generating course content for {prompt_vars['college_name']}")

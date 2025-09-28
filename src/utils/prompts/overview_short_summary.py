@@ -73,7 +73,7 @@ Generate college short summary of the overview following exact content patterns 
 - **Mixed terminology:** Alternate between *"college,"* *"institute,"* *"university"*
 - **Redundant information:** Mention placement assistance multiple ways
 
-**Required Content Structure:**
+**Required Content Structure:** (ONLY 1 PARAGRAPH)
 
 **Paragraph 1: Basic Information + Rankings + Courses**
 **{college_name}** is a distinguished [college_type] established in [Establishment Year] in **{city}, {state}**. The **{college_name}** offers a total of **{total_courses}** courses across various disciplines, a non-private college member. **[college_acronym]** is renowned; the *institute* has **{total_students}** students enrolled in various programs including **Engineering** and other specialized fields across its departments. This top-ranked premium institute (**{college_name}**) operates through more than **{departments}** specialized departments with over **{faculty_members}** faculty members. **[college_acronym]** is committed to academic excellence and is recognized by appropriate regulatory bodies (often referred to as a premier *college*).

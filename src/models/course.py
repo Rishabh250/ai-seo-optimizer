@@ -139,5 +139,68 @@ class CourseData:
             course_summary_parts.append(f"Diploma courses: {', '.join(levels['Diploma'])}")
 
         info["courses"] = "; ".join(course_summary_parts) if course_summary_parts else ", ".join(all_courses)
-        
+
+        return info
+
+    def extract_short_course_info(self) -> Dict[str, str]:
+        """Extract simplified course information for short content generation."""
+        info = {
+            "college_name": self.college_name or "the institution",
+            "city": self.city or "",
+            "state": self.state or "",
+        }
+
+        if not self.course_data:
+            info["courses"] = "various programs"
+            info["total_courses"] = "several"
+            info["course_levels"] = "UG and PG"
+            return info
+
+        # Count courses by level
+        level_counts = {"UG": 0, "PG": 0, "PhD": 0, "Diploma": 0}
+        total_courses = len(self.course_data)
+        domains = set()
+        popular_courses = []
+
+        for course_name, course_details in self.course_data.items():
+            popular_courses.append(course_name)
+
+            if course_details.level:
+                level = course_details.level.upper()
+                if "UG" in level or "UNDERGRADUATE" in level or "BACHELOR" in level:
+                    level_counts["UG"] += 1
+                elif "PG" in level or "POSTGRADUATE" in level or "MASTER" in level:
+                    level_counts["PG"] += 1
+                elif "PHD" in level or "DOCTORAL" in level:
+                    level_counts["PhD"] += 1
+                elif "DIPLOMA" in level:
+                    level_counts["Diploma"] += 1
+
+            if course_details.domain:
+                domains.add(course_details.domain)
+
+        # Create short summaries
+        info["total_courses"] = str(total_courses)
+
+        # Level summary
+        level_parts = []
+        if level_counts["UG"] > 0:
+            level_parts.append("UG")
+        if level_counts["PG"] > 0:
+            level_parts.append("PG")
+        if level_counts["PhD"] > 0:
+            level_parts.append("PhD")
+
+        info["course_levels"] = ", ".join(level_parts) if level_parts else "various levels"
+
+        # Domain summary (first 3 domains)
+        domain_list = list(domains)[:3]
+        info["domains"] = ", ".join(domain_list) if domain_list else "multiple streams"
+
+        # Popular courses (first 3)
+        info["popular_courses"] = ", ".join(popular_courses[:3]) if popular_courses else "various programs"
+
+        # Simple course description
+        info["courses"] = f"{total_courses} programs across {info['course_levels']} levels"
+
         return info

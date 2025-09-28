@@ -11,19 +11,35 @@ class FeesPrompt:
         FEES_PROMPT = PromptTemplate(
             input_variables=[
                 "college_name",
-                "degree_name",
+                "city",
+                "state",
+                "total_programs",
+                "degree_levels",
+                "fee_range",
+                "accessibility_support",
+                "programs_list",
+                "specializations",
             ],
             template="""
-**Shiksha.com Authentic Fees Content Generation**
+**Authentic Fees Content Generation**
 
 **Primary Instruction:**
-Generate fees information following Shiksha.com's exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
+Generate fees information following exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
 
 **College Data:**
 - College Name: {college_name}
-- Degree/Program: {degree_name}
+- Location: {city}, {state}
+- Total Programs: {total_programs}
+- Degree Levels: {degree_levels}
+- Fee Range: {fee_range}
+- Accessibility Support: {accessibility_support}
+- Programs Offered: {programs_list}
+- Specializations: {specializations}
 
-**Critical Shiksha.com Content Patterns (MANDATORY):**
+**STRICT REQUIREMENT: Do not use competitors name in the fees information like Shiksha.com, Careers360, Collegedunia, etc.**
+*Note: If any data is not available, remove it from the fees information.*
+
+**Critical Content Patterns (MANDATORY):**
 
 **1. Statistical Integration Style:**
 - Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
@@ -61,8 +77,8 @@ Generate fees information following Shiksha.com's exact content patterns that su
 
 **Required Content Structure: (Maximum 1 paragraph)**
 
-**Paragraph 1: Fees + Accreditation**
-*"{college_name} offers various fee structures for different programs. These fees are provided across [departments]. {college_name} has been recognised by the [Bodies]. {college_name} provides {degree_name} programmes with fee structure in affiliation with [university]. Further, {college_name} provides [programs] as flagship courses and focuses on [areas]. The institute offers [percentage]% practical exposure and [percentage]% theoretical exposure to the students."*
+**Paragraph 1: Fees + Program Information**
+*"{college_name} offers comprehensive fee structures for {total_programs} programs across {degree_levels} levels. The fees at {college_name} range {fee_range} depending on the course and specialization. {college_name} has been recognised by various accreditation bodies and provides quality education in {city}, {state}. The institute offers {programs_list} with specializations in {specializations}. Further, {college_name} ensures accessibility support ({accessibility_support}) and focuses on practical learning with theoretical foundations. The fee structure is designed to be transparent and competitive in the education sector."*
 
 **Authentic Language Patterns:**
 

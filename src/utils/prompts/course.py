@@ -13,24 +13,27 @@ class CoursePrompt:
                 "college_name",
                 "city", 
                 "state",
+                "courses",
             ],
             template="""
-**Shiksha.com Authentic Course Pattern Generation Prompt**
+**Authentic Course Pattern Generation Prompt**
 
 **Primary Instruction:**
-Generate course information following Shiksha.com's exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
+Generate course information following exact content patterns that successfully bypass AI detection through authentic institutional content writing imperfections and natural information flow issues.
 
 **College Data:**
 - College Name: {college_name}
 - City: {city}
 - State: {state}
+- Courses: {courses}
 
+**STRICT REQUIREMENT: Do not use competitors name in the course information like Shiksha.com, Careers360, Collegedunia, etc.**
 *Note: If any data is not available, remove it from the course information.*
 
 **Mandatory Opening Formula for Course Content:**
 *"[Institution Name] offers over [Number] courses at UG, PG, and PhD levels in the streams of [Streams]. [Program] is the flagship course of [Institution] offered based on [Exam] scores. Besides, [Institution] also offers [additional programs] like [examples]."*
 
-**Critical Shiksha.com Content Patterns (MANDATORY):**
+**Critical Content Patterns (MANDATORY):**
 
 **1. Statistical Integration Style:**
 - Embed numbers mid-sentence naturally: *"established in [Year]"*, *"ranked [Number]th"*
@@ -65,7 +68,7 @@ Generate course information following Shiksha.com's exact content patterns that 
 - **Percentage specificity:** Include oddly specific numbers like *"70% practical exposure and 30% theoretical"*
 - **Statistical awkwardness:** *"50+ guidance sessions"*, *"36+ online talks"*, *"[Number]+ online courses"*
 
-**Required Content Structure:**
+**Required Content Structure:** (ONLY 1 PARAGRAPH)
 
 **Paragraph 1: Courses**
 *"{college_name} offers over [Number] courses at UG, PG, and PhD levels in the streams of [Streams]. [Program] is the flagship course of {college_name} offered based on [Exam] scores. Besides, {college_name} also offers [additional programs] like [examples]."*
